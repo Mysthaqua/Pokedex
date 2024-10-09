@@ -2,6 +2,7 @@ const API_URL = "https://pokeapi.co/api/v2";
 
 const pokemonSearch = document.querySelector("#pokemon-search");
 const searchInput = document.querySelector("#search-input");
+const pokemonDisplay = document.querySelector("#pokemon-display");
 const pokemonPicture = document.querySelector("#pokemon-picture");
 const pokemonId = document.querySelector("#pokemon-id");
 const pokemonName = document.querySelector("#pokemon-name");
@@ -12,8 +13,16 @@ const pokemonAbilities = document.querySelector("#pokemon-abilities");
 const pokemonPrevious = document.querySelector("#pokemon-previous");
 const pokemonNext = document.querySelector("#pokemon-next");
 
+pokemonDisplay.style.display = "none";
+pokemonPrevious.style.display = "none";
+pokemonNext.style.display = "none";
+
 const getPokemon = async (pokemon) => {
   const data = await (await fetch(`${API_URL}/pokemon/${pokemon}`)).json();
+
+  pokemonDisplay.style.display = "block";
+  pokemonPrevious.style.display = "block";
+  pokemonNext.style.display = "block";
 
   pokemonPicture.src = data.sprites.front_default;
   pokemonId.innerHTML = `#${data.id}`;

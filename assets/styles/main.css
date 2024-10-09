@@ -1,0 +1,144 @@
+/* Main container styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+body {
+  background-color: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Header styling */
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+header img {
+  height: 64px;
+  margin-right: 1rem;
+}
+
+#pokemon-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#search-input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  width: 250px;
+}
+
+#pokemon-search button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  background-color: #ffcb05;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#pokemon-search button:hover {
+  background-color: #ffb300;
+}
+
+/* Main content */
+main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#pokemon-display {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 300px;
+}
+
+#pokemon-display img {
+  height: 150px;
+  margin-bottom: 1rem;
+}
+
+#pokemon-id,
+#pokemon-name,
+#pokemon-weight,
+#pokemon-height {
+  display: block;
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+  color: #333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+ul li {
+  padding: 0.2rem 0;
+  font-size: 1rem;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+#pokemon-types li {
+  background-color: #78c850;
+}
+
+#pokemon-abilities li {
+  background-color: #6890f0;
+}
+
+/* Navigation buttons */
+button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background-color: #ffcb05;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #ffb300;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  main {
+    flex-direction: column;
+  }
+
+  #pokemon-display {
+    width: 100%;
+  }
+}
