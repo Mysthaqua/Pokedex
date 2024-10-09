@@ -64,7 +64,8 @@ const getPokemon = async (pokemon) => {
   }
 };
 
-pokemonSearch.addEventListener("submit", async () => {
+pokemonSearch.addEventListener("submit", async (e) => {
+  e.preventDefault();
   const pokemon = searchInput.value.toLowerCase();
   searchInput.value = "";
   await getPokemon(pokemon);
