@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="./assets/styles/main.css" />
+    <script type="module" src="./assets/scripts/main.js" defer></script>
+  </head>
+
+  <body>
+    <header>
+      <img src="./assets/img/pokeapi_256.png" alt="PokeAPI Logo" />
+      <form action="#" id="pokemon-search">
+        <input
+          type="text"
+          placeholder="Nom ou Numéro de Pokédex national"
+          id="search-input"
+        />
+        <button>Search</button>
+      </form>
+    </header>
+    <main>
+      <button id="pokemon-previous" disabled>&lt;&lt;</button>
+      <div id="pokemon-display">
+        <img
+          id="pokemon-picture"
+          src="./assets/img/pokeball.png"
+          alt="Pokemon Sprite"
+        />
+        <span id="pokemon-id">ID</span>
+        <span id="pokemon-name">NAME</span>
+        <span id="pokemon-weight">WEIGHT</span>
+        <span id="pokemon-height">HEIGHT</span>
+        <ul id="pokemon-types"></ul>
+        <ul id="pokemon-abilities"></ul>
+      </div>
+      <button id="pokemon-next" disabled>&gt;&gt;</button>
+    </main>
+  </body>
+</html>
