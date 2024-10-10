@@ -19,6 +19,7 @@ body {
 /* Header styling */
 header {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 2rem;
@@ -27,6 +28,7 @@ header {
 header img {
   height: 64px;
   margin-right: 1rem;
+  margin-bottom: 2rem;
 }
 
 #pokemon-search {
@@ -130,6 +132,14 @@ button:disabled {
 
 button:hover:not(:disabled) {
   background-color: #ffb300;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
 }
 
 /* Responsive design */

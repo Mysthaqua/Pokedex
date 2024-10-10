@@ -14,15 +14,15 @@
       <form action="#" id="pokemon-search">
         <input
           type="text"
-          placeholder="Nom ou Numéro de Pokédex national"
+          placeholder="Nom ou Numéro de Pokédex"
           id="search-input"
         />
         <button>Search</button>
       </form>
     </header>
     <main>
-      <button id="pokemon-previous" disabled>&lt;&lt;</button>
-      <div id="pokemon-display">
+      <button id="pokemon-previous" class="hide" disabled>&lt;&lt;</button>
+      <div id="pokemon-display" class="hide">
         <img
           id="pokemon-picture"
           src="./assets/img/pokeball.png"
@@ -35,7 +35,7 @@
         <ul id="pokemon-types"></ul>
         <ul id="pokemon-abilities"></ul>
       </div>
-      <button id="pokemon-next" disabled>&gt;&gt;</button>
+      <button id="pokemon-next" class="hide" disabled>&gt;&gt;</button>
     </main>
   </body>
 </html>
