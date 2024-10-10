@@ -8,9 +8,11 @@ export default class G1Engine extends Engine {
     super();
 
     this.scale = 8 * scale;
-    this.index = 1;
     this.pokemons = [];
-    this.getPokemons();
+
+    for (let i = 1; i < 8; i++) {
+      this.getPokemon(i).then((pokemon) => this.pokemons.push(pokemon));
+    }
 
     this.background = new Image();
     this.background.src = "./assets/img/G1/pokedex.png";
@@ -40,15 +42,10 @@ export default class G1Engine extends Engine {
       switch (e.key) {
         case "ArrowDown":
           if (!this.selected) {
-            if (this.cursorLeft.pos < this.pokemons.length * 2 + 1) {
+            if (this.cursorLeft.pos < 15) {
               this.cursorLeft.pos += 2;
-            } else if (
-              this.cursorLeft.pos == this.pokemons.length * 2 + 1 &&
-              this.index < 148
-            ) {
-              this.cursorLeft.pos = 3;
-              this.index += 7;
-              this.getPokemons();
+            } else if (this.pokemons[this.pokemons.length - 1].id < 151) {
+              this.nextPokemon();
             }
           } else if (this.cursorRight.pos < 16) {
             this.cursorRight.pos += 2;
@@ -58,16 +55,15 @@ export default class G1Engine extends Engine {
           if (!this.selected) {
             if (this.cursorLeft.pos > 3) {
               this.cursorLeft.pos -= 2;
-            } else if (this.cursorLeft.pos == 3 && this.index > 1) {
-              this.cursorLeft.pos = 15;
-              this.index -= 7;
-              this.getPokemons();
+            } else if (this.pokemons[0].id > 1) {
+              this.previousPokemon();
             }
           } else if (this.cursorRight.pos > 10) {
             this.cursorRight.pos -= 2;
           }
           break;
         case "Enter":
+        case "ArrowRight":
           if (!this.selected) {
             this.selected = true;
             this.cursorLeft.src = "./assets/img/G1/cursor2.png";
@@ -75,28 +71,15 @@ export default class G1Engine extends Engine {
           }
           break;
         case "Escape":
+        case "ArrowLeft":
           this.selected = false;
           this.cursorLeft.src = "./assets/img/G1/cursor1.png";
           break;
-        /* case "ArrowLeft":
-          if (this.cursor.pos.x == 15) {
-            this.cursor.pos.x = 0;
-            this.cursor.pos.y = 3;
-            this.cursor.src = "./assets/img/G1/cursor.png";
-          }
-          break;
-        case "ArrowRight":
-          if (this.cursor.pos.x == 0) {
-            this.cursor.pos.x = 15;
-            this.cursor.pos.y = 10;
-            this.cursor.src = "./assets/img/G1/cursor2.png";
-          }
-          break; */
       }
     });
   }
 
-  async draw() {
+  draw() {
     this.ctx.drawImage(this.background, 0, 0, this.width, this.height);
 
     this.ctx.fillText("CONTENTS", this.scale, 2 * this.scale);
@@ -107,17 +90,15 @@ export default class G1Engine extends Engine {
     this.ctx.fillText("AREA", 16 * this.scale, 15 * this.scale);
     this.ctx.fillText("QUIT", 16 * this.scale, 17 * this.scale);
 
-    // PLACEHOLDER
+    // TODO: number of pokemons seen
     this.ctx.fillText("0", 18 * this.scale, 4 * this.scale);
-    // PLACEHOLDER
+    // TODO: number of pokemons caught
     this.ctx.fillText("0", 18 * this.scale, 7 * this.scale);
 
     this.pokemons.forEach((pokemon, i) => {
       this.ctx.fillText(
         `${
-          pokemon?.hasBeenSeen
-            ? (this.index + i).toString().padStart(3, "0")
-            : "000"
+          pokemon?.hasBeenSeen ? pokemon.id.toString().padStart(3, "0") : "000"
         }`,
         this.scale,
         (3 + 2 * i) * this.scale
@@ -138,15 +119,6 @@ export default class G1Engine extends Engine {
       }
     });
 
-    // PLACEHOLDER
-    /* this.ctx.drawImage(
-      this.pokeball,
-      3 * this.scale,
-      3 * this.scale,
-      this.scale,
-      this.scale
-    ); */
-
     this.ctx.drawImage(
       this.cursorLeft,
       0,
@@ -165,32 +137,42 @@ export default class G1Engine extends Engine {
     }
   }
 
-  async getPokemons() {
-    this.pokemons = [];
-    for (let i = this.index; i < this.index + 7 && i <= 151; i++) {
-      const data = await (await fetch(`${API_URL}/pokemon/${i}`)).json();
-      const pokemon = new Pokemon(
-        data.id,
-        `${data.name.substring(0, 1).toUpperCase()}${data.name
-          .substring(1)
-          .toLowerCase()}`,
-        data.sprites.front_default,
-        data.weight / 10,
-        data.height / 10,
-        data.types.map(
-          (type) =>
-            `${type.type.name.substring(0, 1).toUpperCase()}${type.type.name
-              .substring(1)
-              .toLowerCase()}`
-        ),
-        data.abilities.map(
-          (ability) =>
-            `${ability.ability.name
-              .substring(0, 1)
-              .toUpperCase()}${ability.ability.name.substring(1).toLowerCase()}`
-        )
-      );
-      this.pokemons.push(pokemon);
-    }
+  nextPokemon() {
+    this.pokemons.shift();
+    this.getPokemon(this.pokemons[this.pokemons.length - 1].id + 1).then(
+      (pokemon) => this.pokemons.push(pokemon)
+    );
+  }
+
+  previousPokemon() {
+    this.pokemons.pop();
+    this.getPokemon(this.pokemons[0].id - 1).then((pokemon) =>
+      this.pokemons.unshift(pokemon)
+    );
+  }
+
+  async getPokemon(i) {
+    const data = await (await fetch(`${API_URL}/pokemon/${i}`)).json();
+    return new Pokemon(
+      data.id,
+      `${data.name.substring(0, 1).toUpperCase()}${data.name
+        .substring(1)
+        .toLowerCase()}`,
+      data.sprites.front_default,
+      data.weight / 10,
+      data.height / 10,
+      data.types.map(
+        (type) =>
+          `${type.type.name.substring(0, 1).toUpperCase()}${type.type.name
+            .substring(1)
+            .toLowerCase()}`
+      ),
+      data.abilities.map(
+        (ability) =>
+          `${ability.ability.name
+            .substring(0, 1)
+            .toUpperCase()}${ability.ability.name.substring(1).toLowerCase()}`
+      )
+    );
   }
 }
