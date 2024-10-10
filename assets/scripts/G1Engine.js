@@ -10,20 +10,24 @@ export default class G1Engine extends Engine {
     this.scale = 8 * scale;
     this.pokemons = [];
 
-    for (let i = 1; i < 8; i++) {
-      this.getPokemon(i).then((pokemon) => this.pokemons.push(pokemon));
-    }
+    (async () => {
+      for (let i = 1; i < 8; i++) {
+        await this.getPokemon(i).then((pokemon) => this.pokemons.push(pokemon));
+      }
+    })();
 
     this.background = new Image();
     this.background.src = "./assets/img/G1/pokedex.png";
 
-    this.width = (this.background.width * this.scale) / 8;
-    this.height = (this.background.height * this.scale) / 8;
+    this.background.addEventListener("load", () => {
+      this.width = (this.background.width * this.scale) / 8;
+      this.height = (this.background.height * this.scale) / 8;
 
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
 
-    this.ctx.font = `${this.scale}px G1`;
+      this.ctx.font = `${this.scale}px G1`;
+    });
 
     this.pokeball = new Image();
     this.pokeball.src = "./assets/img/G1/pokeball.png";
@@ -95,9 +99,9 @@ export default class G1Engine extends Engine {
     this.ctx.fillText("AREA", 16 * this.scale, 15 * this.scale);
     this.ctx.fillText("QUIT", 16 * this.scale, 17 * this.scale);
 
-    // TODO: number of pokemons seen
+    // TODO: number of pokemons seen (local storage)
     this.ctx.fillText("0", 18 * this.scale, 4 * this.scale);
-    // TODO: number of pokemons caught
+    // TODO: number of pokemons caught (local storage)
     this.ctx.fillText("0", 18 * this.scale, 7 * this.scale);
 
     this.pokemons.forEach((pokemon, i) => {
