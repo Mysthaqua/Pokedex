@@ -1,5 +1,15 @@
 export default class Pokemon {
-  constructor(id, name, img, weight, height, types, abilities) {
+  constructor(
+    id,
+    name,
+    img,
+    weight,
+    height,
+    types,
+    abilities,
+    hasBeenSeen,
+    hasBeenCaught
+  ) {
     this.id = id;
     this.name = name;
     this.img = img;
@@ -8,8 +18,8 @@ export default class Pokemon {
     this.types = types;
     this.abilities = abilities;
 
-    this.hasBeenSeen = true;
-    this.hasBeenCaught = false;
+    this.hasBeenSeen = hasBeenSeen;
+    this.hasBeenCaught = hasBeenCaught;
   }
 
   render(container) {

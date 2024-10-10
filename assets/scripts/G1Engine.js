@@ -43,9 +43,8 @@ export default class G1Engine extends Engine {
     this.selected = false;
     this.updating = false;
 
-    this.pokemonsSeen = localStorage.getItem;
-
     window.addEventListener("keydown", (e) => {
+      let pokemon, pokemonsSeen, pokemonsCaught;
       switch (e.key) {
         case "ArrowDown":
           if (!this.selected) {
@@ -82,8 +81,97 @@ export default class G1Engine extends Engine {
           this.selected = false;
           this.cursorLeft.src = "./assets/img/G1/cursor1.png";
           break;
+        case "s":
+          pokemon = this.pokemons[Math.floor(this.cursorLeft.pos / 2) - 1];
+          pokemonsSeen = JSON.parse(localStorage.getItem("pokemonsSeen")) ?? [];
+          pokemonsCaught =
+            JSON.parse(localStorage.getItem("pokemonsCaught")) ?? [];
+
+          if (pokemon.hasBeenSeen) {
+            pokemon.hasBeenSeen = false;
+            pokemonsSeen = pokemonsSeen.filter((id) => id !== pokemon.id);
+            localStorage.setItem("pokemonsSeen", JSON.stringify(pokemonsSeen));
+            pokemon.hasBeenCaught = false;
+            pokemonsCaught = pokemonsCaught.filter((id) => id !== pokemon.id);
+            localStorage.setItem(
+              "pokemonsCaught",
+              JSON.stringify(pokemonsCaught)
+            );
+          } else {
+            pokemon.hasBeenSeen = true;
+            pokemonsSeen.push(pokemon.id);
+            localStorage.setItem("pokemonsSeen", JSON.stringify(pokemonsSeen));
+          }
+          break;
+        case "c":
+          pokemon = this.pokemons[Math.floor(this.cursorLeft.pos / 2) - 1];
+          pokemonsSeen = JSON.parse(localStorage.getItem("pokemonsSeen")) ?? [];
+          pokemonsCaught =
+            JSON.parse(localStorage.getItem("pokemonsCaught")) ?? [];
+
+          if (pokemon.hasBeenCaught) {
+            pokemon.hasBeenCaught = false;
+            pokemonsCaught = pokemonsCaught.filter((id) => id !== pokemon.id);
+            localStorage.setItem(
+              "pokemonsCaught",
+              JSON.stringify(pokemonsCaught)
+            );
+          } else {
+            pokemon.hasBeenCaught = true;
+            pokemonsCaught.push(pokemon.id);
+            localStorage.setItem(
+              "pokemonsCaught",
+              JSON.stringify(pokemonsCaught)
+            );
+            pokemon.hasBeenSeen = true;
+            pokemonsSeen.push(pokemon.id);
+            localStorage.setItem("pokemonsSeen", JSON.stringify(pokemonsSeen));
+          }
+          break;
       }
     });
+
+    const controls = document.createElement("div");
+
+    const p = document.createElement("p");
+    p.innerHTML = "Controls:";
+    controls.appendChild(p);
+
+    const ul = document.createElement("ul");
+
+    const liArrows = document.createElement("li");
+    const spanArrows = document.createElement("span");
+    spanArrows.innerHTML = "Arrow keys: navigate";
+    liArrows.appendChild(spanArrows);
+
+    const liEnter = document.createElement("li");
+    const spanEnter = document.createElement("span");
+    spanEnter.innerHTML = "Enter: select";
+    liEnter.appendChild(spanEnter);
+
+    const liEscape = document.createElement("li");
+    const spanEscape = document.createElement("span");
+    spanEscape.innerHTML = "Escape: cancel";
+    liEscape.appendChild(spanEscape);
+
+    const liS = document.createElement("li");
+    const spanS = document.createElement("span");
+    spanS.innerHTML = "S: seen";
+    liS.appendChild(spanS);
+
+    const liC = document.createElement("li");
+    const spanC = document.createElement("span");
+    spanC.innerHTML = "C: caught";
+    liC.appendChild(spanC);
+
+    ul.appendChild(liArrows);
+    ul.appendChild(liEnter);
+    ul.appendChild(liEscape);
+    ul.appendChild(liS);
+    ul.appendChild(liC);
+    controls.appendChild(ul);
+
+    document.body.appendChild(controls);
   }
 
   draw() {
@@ -99,10 +187,11 @@ export default class G1Engine extends Engine {
     this.ctx.fillText("AREA", 16 * this.scale, 15 * this.scale);
     this.ctx.fillText("QUIT", 16 * this.scale, 17 * this.scale);
 
-    // TODO: number of pokemons seen (local storage)
-    this.ctx.fillText("0", 18 * this.scale, 4 * this.scale);
-    // TODO: number of pokemons caught (local storage)
-    this.ctx.fillText("0", 18 * this.scale, 7 * this.scale);
+    const pokemonsSeen = JSON.parse(localStorage.getItem("pokemonsSeen")) ?? [];
+    const pokemonsCaught =
+      JSON.parse(localStorage.getItem("pokemonsCaught")) ?? [];
+    this.ctx.fillText(pokemonsSeen.length, 18 * this.scale, 4 * this.scale);
+    this.ctx.fillText(pokemonsCaught.length, 18 * this.scale, 7 * this.scale);
 
     this.pokemons.forEach((pokemon, i) => {
       this.ctx.fillText(
@@ -168,6 +257,11 @@ export default class G1Engine extends Engine {
 
   async getPokemon(i) {
     const data = await (await fetch(`${API_URL}/pokemon/${i}`)).json();
+
+    const pokemonsSeen = JSON.parse(localStorage.getItem("pokemonsSeen")) ?? [];
+    const pokemonsCaught =
+      JSON.parse(localStorage.getItem("pokemonsCaught")) ?? [];
+
     return new Pokemon(
       data.id,
       `${data.name.substring(0, 1).toUpperCase()}${data.name
@@ -187,7 +281,9 @@ export default class G1Engine extends Engine {
           `${ability.ability.name
             .substring(0, 1)
             .toUpperCase()}${ability.ability.name.substring(1).toLowerCase()}`
-      )
+      ),
+      pokemonsSeen.includes(data.id),
+      pokemonsCaught.includes(data.id)
     );
   }
 }
