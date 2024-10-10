@@ -48,7 +48,7 @@ export default class G1Engine extends Engine {
             if (this.cursorLeft.pos < 15) {
               this.cursorLeft.pos += 2;
             } else if (this.pokemons[this.pokemons.length - 1].id < 151) {
-              this.nextPokemon();
+              if (!this.updating) this.nextPokemon();
             }
           } else if (this.cursorRight.pos < 16) {
             this.cursorRight.pos += 2;
@@ -59,7 +59,7 @@ export default class G1Engine extends Engine {
             if (this.cursorLeft.pos > 3) {
               this.cursorLeft.pos -= 2;
             } else if (this.pokemons[0].id > 1) {
-              this.previousPokemon();
+              if (!this.updating) this.previousPokemon();
             }
           } else if (this.cursorRight.pos > 10) {
             this.cursorRight.pos -= 2;
