@@ -7,6 +7,9 @@ export default class Pokemon {
     this.height = height;
     this.types = types;
     this.abilities = abilities;
+
+    this.hasBeenSeen = true;
+    this.hasBeenCaught = false;
   }
 
   render(container) {

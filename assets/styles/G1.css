@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "G1";
+  src: url("../font/font_G1.ttf");
+}
+
+* {
+  background-color: black;
+  font-family: "G1";
+}
