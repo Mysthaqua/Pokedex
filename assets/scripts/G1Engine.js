@@ -37,6 +37,9 @@ export default class G1Engine extends Engine {
     this.cursorRight.pos = 10;
 
     this.selected = false;
+    this.updating = false;
+
+    this.pokemonsSeen = localStorage.getItem;
 
     window.addEventListener("keydown", (e) => {
       switch (e.key) {
@@ -80,6 +83,8 @@ export default class G1Engine extends Engine {
   }
 
   draw() {
+    if (this.updating) return;
+
     this.ctx.drawImage(this.background, 0, 0, this.width, this.height);
 
     this.ctx.fillText("CONTENTS", this.scale, 2 * this.scale);
@@ -138,17 +143,23 @@ export default class G1Engine extends Engine {
   }
 
   nextPokemon() {
+    this.updating = true;
     this.pokemons.shift();
     this.getPokemon(this.pokemons[this.pokemons.length - 1].id + 1).then(
-      (pokemon) => this.pokemons.push(pokemon)
+      (pokemon) => {
+        this.pokemons.push(pokemon);
+        this.updating = false;
+      }
     );
   }
 
   previousPokemon() {
+    this.updating = true;
     this.pokemons.pop();
-    this.getPokemon(this.pokemons[0].id - 1).then((pokemon) =>
-      this.pokemons.unshift(pokemon)
-    );
+    this.getPokemon(this.pokemons[0].id - 1).then((pokemon) => {
+      this.pokemons.unshift(pokemon);
+      this.updating = false;
+    });
   }
 
   async getPokemon(i) {
